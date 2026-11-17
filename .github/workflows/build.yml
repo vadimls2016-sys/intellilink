@@ -7,10 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Unpack
         run: |
           mkdir -p src
-          unzip -o IntelliLink-project.zip -d src
+          git log --reverse --diff-filter=AM --name-only --format= -- '*.zip' | while read -r f; do
+            if [ -f "$f" ]; then unzip -o "$f" -d src; fi
+          done
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
